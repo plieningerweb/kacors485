@@ -1,3 +1,3 @@
 #!/bin/bash
 
-trial test.test_base_1
+trial test.test_kakors485
