@@ -1,4 +1,3 @@
-
 import serial
 
 class KakoRS485(object):
@@ -28,8 +27,7 @@ class KakoRS485(object):
             timeout=0.5
         )
 
-        ser.open()
-        ser.isOpen()
+        self.ser.open()
 
     def close(self):
         """
@@ -60,6 +58,7 @@ class KakoRS485(object):
         return answers
 
     def sendCmdAndRead(self,cmd, wait=0.3):
+        import time
         """
         send command on rs485 and read answer
 
@@ -80,7 +79,7 @@ class KakoRS485(object):
 
         #read answer line
         answer = []
-        while ser.inWaiting() > 0:
+        while self.ser.inWaiting() > 0:
             answer.append(self.ser.readline())
 
         return answer
