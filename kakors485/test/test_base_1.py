@@ -41,30 +41,22 @@ class TestStringMethods(unittest.TestCase):
         #here: return_value is a instance of serial.Serial
         mock_serial.return_value.close.assert_called_once_with()
 
-    def setupMockRead(self,mock_serial,value):
-        """
-        prepare mock serial to read some data
-        it will set the side effect of the inWaiting() function
-        in order to exactly read one line
-        """
+    @mock.patch('serial.Serial', spec=serial.Serial)
+    def testSendCmdAndRead(self,mock_serial):
         k = KakoRS485('/dev/ttyUSB0')
-
 
         #setup side effect
         self.first_call = True
 
         instance = mock_serial.return_value
         instance.inWaiting.side_effect = self.side_effect_1_and_then_0
+        instance.readline.return_value = 'answer'
 
-        return k
+        read = k.sendCmdAndRead('question')
 
-    @mock.patch('serial.Serial', spec=serial.Serial)
-    def testSendCmdAndRead(self,mock_serial):
-        k = self.setupMockRead(mock_serial)
+        instance.write.assert_called_once_with('question')
 
-        read = k.sendCmdAndRead('test')
-
-
+        self.assertEqual(['answer'],read)
 
     def side_effect_1_and_then_0(self):
         """
@@ -78,30 +70,31 @@ class TestStringMethods(unittest.TestCase):
 
         return 0
 
+    @mock.patch('serial.Serial', spec=serial.Serial)
+    def testReadInverter(self,mock_serial):
+        k = KakoRS485('/dev/ttyUSB0')
 
+        #setup side effect
+        self.first_call = True
 
-"""
-    def test_upper(self):
-  self.assertEqual('foo'.upper(), 'FOO')
+        instance = mock_serial.return_value
+        instance.inWaiting.side_effect = self.side_effect_1_and_then_0
+        instance.readline.return_value = 'answer'
 
-def test_isupper(self):
-  self.assertTrue('FOO'.isupper())
-  self.assertFalse('Foo'.isupper())
+        nr = 2
+        read = k.readInverter(nr)
 
-def test_split(self):
-  s = 'hello world'
-  self.assertEqual(s.split(), ['hello', 'world'])
-  # check that s.split fails when the separator is not a string
-  with self.assertRaises(TypeError):
-      s.split(2)
+        expected_calls = [
+                    mock.call(str(nr)+'1\r\n'), 
+                    mock.call(str(nr)+'2\r\n'), 
+                    mock.call(str(nr)+'4\r\n'), 
+                ]
 
-if __name__ == '__main__':
-    unittest.main()
+        self.assertTrue(instance.write.mock_calls == expected_calls) 
 
-     def setUp(self):
-                 self.widget = Widget('The widget')
-
-                     def tearDown(self):
-                                 self.widget.dispose()
-                                         self.widget = None
-"""
+        #we only send once answer back
+        expected_answer = [
+                ['answer'],
+                [],
+                []]
+        self.assertEqual(read,expected_answer)
