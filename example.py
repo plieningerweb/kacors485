@@ -20,10 +20,10 @@ if len(sys.argv) != 2:
 
 port = sys.argv[1]
 
-from kakors485 import kakors485
+from kacors485 import kacors485
 
 
-K = kakors485.KakoRS485(port)
+K = kacors485.KacoRS485(port)
 
 K.waitBeforeRead = waitBeforeRead
 

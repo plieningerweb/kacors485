@@ -6,7 +6,7 @@ import os.path
 libpath = os.path.abspath(os.path.join(os.path.dirname(__file__),  os.path.pardir))
 sys.path.append(libpath)
 
-from kakors485.kakors485 import KakoRS485, KakoRS485Parser
+from kacors485.kacors485 import KacoRS485, KacoRS485Parser
 
 try:
     from unittest import mock
@@ -24,7 +24,7 @@ class TestSerialMethods(unittest.TestCase):
 
     @mock.patch('serial.Serial', spec=serial.Serial)
     def testInitialization(self, mock_serial):
-        k = KakoRS485('/dev/ttyUSB0')
+        k = KacoRS485('/dev/ttyUSB0')
 
         mock_serial.assert_called_once_with(
             port='/dev/ttyUSB0', 
@@ -37,7 +37,7 @@ class TestSerialMethods(unittest.TestCase):
 
     @mock.patch('serial.Serial', spec=serial.Serial)
     def testClose(self,mock_serial):
-        k = KakoRS485('/dev/ttyUSB0')
+        k = KacoRS485('/dev/ttyUSB0')
 
         k.close()
 
@@ -48,7 +48,7 @@ class TestSerialMethods(unittest.TestCase):
 
     @mock.patch('serial.Serial', spec=serial.Serial)
     def testSendCmdAndRead(self,mock_serial):
-        k = KakoRS485('/dev/ttyUSB0')
+        k = KacoRS485('/dev/ttyUSB0')
 
         #setup side effect
         self.first_call = True
@@ -77,7 +77,7 @@ class TestSerialMethods(unittest.TestCase):
 
     @mock.patch('serial.Serial', spec=serial.Serial)
     def testReadInverter(self,mock_serial):
-        k = KakoRS485('/dev/ttyUSB0')
+        k = KacoRS485('/dev/ttyUSB0')
 
         #setup side effect
         self.first_call = True
@@ -107,7 +107,7 @@ class TestSerialMethods(unittest.TestCase):
 class TestParserMethods(unittest.TestCase):
 
     def testParse0(self):
-        p = KakoRS485Parser()
+        p = KacoRS485Parser()
 
         out = '*010	4	585.9	10.17	5958	229.5	24.90	5720	36	17614	9600I dx'
         expected = {
@@ -141,7 +141,7 @@ class TestParserMethods(unittest.TestCase):
         self.assertEqual(answer,expected)
 
     def testParse3(self):
-        p = KakoRS485Parser()
+        p = KacoRS485Parser()
 
         out = '*013 2286 4184 42 581 8:46 11:04 11:04 df'
         expected = {

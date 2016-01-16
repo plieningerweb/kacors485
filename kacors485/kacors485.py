@@ -1,6 +1,6 @@
 import serial
 
-class KakoRS485Parser(object):
+class KacoRS485Parser(object):
     """
     parse the answer of kakco rs485 protokoll
     """
@@ -95,9 +95,9 @@ class KakoRS485Parser(object):
 
 
 
-class KakoRS485(object):
+class KacoRS485(object):
     """
-    KakoRS485 can talk to kako powador rs485 interface
+    KacoRS485 can talk to kaco powador rs485 interface
 
     supports:
         * reading current values
@@ -111,7 +111,7 @@ class KakoRS485(object):
 
         example
         ``
-        kako = KakoRS485('/dev/ttyUSB0')
+        kaco = KacoRS485('/dev/ttyUSB0')
         ``
         """
 
@@ -155,7 +155,7 @@ class KakoRS485(object):
     def readInverterAndParse(self,inverterNumber):
         answers = self.readInverter(inverterNumber)
 
-        P = KakoRS485Parser()
+        P = KacoRS485Parser()
 
         print("answers",answers)
 

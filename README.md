@@ -1,4 +1,4 @@
-# Kako RS485 Doc
+# Kaco RS485 Doc
 
 Python library to retrieve information from Kaco inverters.
 
@@ -9,9 +9,9 @@ A small example is provided in the file called `example.py`.
 
 Basic usage is also described below:
 ```
-import kakors485
+import kacors485
 
-K = kakors485.KakoRS485('/dev/ttyUSB0')
+K = kacors485.KacoRS485('/dev/ttyUSB0')
 
 #read inverter with address 1
 data = K.readInverterAndParse(1)
