@@ -20,7 +20,7 @@ if len(sys.argv) != 2:
 
 port = sys.argv[1]
 
-import kakors485
+from kakors485 import kakors485
 
 
 K = kakors485.KakoRS485(port)

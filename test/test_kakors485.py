@@ -1,5 +1,12 @@
 import unittest
-from kakors485 import KakoRS485, KakoRS485Parser
+
+#set import path to ../ directory
+import sys
+import os.path
+libpath = os.path.abspath(os.path.join(os.path.dirname(__file__),  os.path.pardir))
+sys.path.append(libpath)
+
+from kakors485.kakors485 import KakoRS485, KakoRS485Parser
 
 try:
     from unittest import mock
