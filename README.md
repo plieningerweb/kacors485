@@ -2,6 +2,11 @@
 
 Python library to retrieve information from Kaco inverters.
 
+## Installation
+The fastest way is to use pip to install it from [pypi](https://pypi.python.org/pypi/kacors485).
+```
+pip install kacors485
+```
 
 ## Example
 
