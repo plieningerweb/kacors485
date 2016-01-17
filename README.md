@@ -14,7 +14,7 @@ A small example is provided in the file called `example.py`.
 
 Basic usage is also described below:
 ```
-import kacors485
+from kacors485 import kacors485
 
 K = kacors485.KacoRS485('/dev/ttyUSB0')
 
