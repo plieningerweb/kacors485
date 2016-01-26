@@ -27,14 +27,28 @@ K = kacors485.KacoRS485(port)
 
 K.waitBeforeRead = waitBeforeRead
 
-data = K.readInverterAndParse(inverterNumber)
+print('read data from inverter {}'.format(inverterNumber))
+import pprint
+import json
+
+try:
+    data = K.readInverterAndParse(inverterNumber)
+except Exception as e:
+    import traceback
+    trace = traceback.format_exc()
+    print("we got an exception")
+    pprint.pprint(trace)
+    print("now same in json")
+    pprint.pprint(json.dumps(trace))
+    exit()
 
 K.close()
 
-print('read data from inverter {}'.format(inverterNumber))
+
 
 print('data is')
 
-import pprint
 
 pprint.pprint(data)
+
+pprint.pprint(json.dumps(data))
