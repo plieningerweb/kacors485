@@ -96,6 +96,12 @@ der drei Netzphasen ausgefallen ist oder die Spannung außerhalb der Toleranz is
 
         mymap = self.mapping[sentCommand]
 
+        if len(l) == 1 and sentCommand == 3:
+            #some inverters do not have a command 3
+            #they only have command one
+            #do not throw an exception, just do not return the stuff
+            return {}
+
         if len(l) != len(mymap):
             print("input",l,"len",len(l))
             print("map",mymap,"len",len(mymap))

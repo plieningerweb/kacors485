@@ -12,12 +12,17 @@ mapping = {
 
         #recorded answer on system
         '#010': 'n\xd6\xf6V\xeb\x00\n*010   4 585.9  0.88   515 230.0  2.04   460  14    377 x 8000xi\r\x00',
-        '#013': 'n\xd6\x96V\xeb\x00\n   883    377  44661  44661      0:47  25301:20  25301:20\x00'
+        '#013': 'n\xd6\x96V\xeb\x00\n   883    377  44661  44661      0:47  25301:20  25301:20\x00',
 
 
         #recorded answer, but intendetly broken! (missing one part)
         '#010': 'n\xd6\xf6V\xeb\x00\n*010   4 585.9  0.88   515 230.0  2.04   460  14    377 x 8000xi\r\x00',
-        '#013': 'n\xd6\x96V\xeb\x00\n   377  44661  44661      0:47  25301:20  25301:20\x00'
+        '#013': 'n\xd6\x96V\xeb\x00\n   377  44661  44661      0:47  25301:20  25301:20\x00',
+
+        #test, if only command one gives an answer
+        #but 3 is empty
+        '#010': 'n\xd6\xf6V\xeb\x00\n*010   4 585.9  0.88   515 230.0  2.04   460  14    377 x 8000xi\r\x00',
+        '#013': 'nv\x96V\xeb'
         }
 
 import sys
