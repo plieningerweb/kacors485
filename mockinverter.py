@@ -1,6 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+## runs mock of inverter
+## use socat to create mock tty interface
+## socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
 mapping = {
         #clean answer, what we whould expect
         '#010': '*010 4 585.9 10.17 5958 229.5 24.90 5720 36 17614 d 9600I',
