@@ -206,7 +206,9 @@ class KacoRS485(object):
         if len(parsed) <= 0:
             raise Exception('Could not get an answer from the inverter number {}; Answer: {:s}'.format(inverterNumber, repr(answers)))
 
-        return P.listDictNameToKey(parsed)
+        #important, set input to empty dict
+        #otherwise, we will reuse input from last function call
+        return P.listDictNameToKey(parsed,{})
 
 
     def sendCmdAndRead(self,cmd):
