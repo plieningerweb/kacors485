@@ -18,3 +18,6 @@ develop-local: uninstall
 
 uninstall:
 	python setup.py clean
+
+deploy-online:
+	python setup.py sdist upload -r pypi
