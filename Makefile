@@ -19,5 +19,8 @@ develop-local: uninstall
 uninstall:
 	python setup.py clean
 
-deploy-online:
+register-package:
+	python setup.py register -r pypi
+
+deploy-package:
 	python setup.py sdist upload -r pypi
