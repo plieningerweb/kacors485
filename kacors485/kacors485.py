@@ -107,7 +107,8 @@ der drei Netzphasen ausgefallen ist oder die Spannung außerhalb der Toleranz is
         if not sentCommand in self.mapping:
             raise Exception('unknown command "{}" to parse in {:s}'.format(sentCommand, repr(answer)))
 
-        mymap = self.mapping[sentCommand]
+        # fix: copy if we remove an item
+        mymap = self.mapping[sentCommand].copy()
 
         if len(l) == 1 and sentCommand == 3:
             #some inverters do not have a command 3
@@ -115,17 +116,24 @@ der drei Netzphasen ausgefallen ist oder die Spannung außerhalb der Toleranz is
             #do not throw an exception, just do not return the stuff
             return {}
 
+        # if one less long, assume command is missing:
+        if len(l) == (len(mymap) -1):
+            # remove last command sent
+            print("assume command_sent is missing in answer")
+            del mymap[0]
+            # rearrange keys, lower each key by one
+            mymap = {(key-1): mymap[key] for key in mymap}
+
         if len(l) != len(mymap):
             print("input",l,"len",len(l))
             print("map",mymap,"len",len(mymap))
             raise Exception('length of answer and template not the same: {:s}'.format(repr(answer)))
 
-
         ret = {}
         for i,value in enumerate(l):
             if 'convert_to' in mymap[i]:
                 value = mymap[i]['convert_to'](value)
-                
+
             ret[i] = mymap[i]
             ret[i]['value'] = value
 

@@ -110,19 +110,69 @@ class TestParserMethods(unittest.TestCase):
     def answer_to_list(self, answer):
         return [answer[k]['value'] for k in answer]
 
-    def testParse0(self):
+    test_lines = [
+        ('#010\r\n',
+         '*010	4	585.9	10.17	5958	229.5	24.90	5720	36	17614	9600I dx',
+         ['*010', 4, 585.9, 10.17, 5958, 229.5, 24.90, 5720, 36, 17614, '9600I', 'dx']
+        ),
+        ('#013\r\n',
+         '*013 2286 4184 42 581 8:46 11:04 11:04',
+         ['*013', 2286, 4184, '42', 581, '8:46', '11:04', '11:04']
+        ),
+        #do not answer anything for test cases
+        ('#010\r\n',
+         '',
+         False
+        ),
+        ('#013\r\n',
+         '',
+         False
+        ),
+        ('#010\r\n',
+         'n\xd6\xf6V\xeb\x00\n*010   4 585.9  0.88   515 230.0  2.04   460  14    377 x 8000xi\r\x00',
+         ['n\xd6\xf6V\xeb*010', 4, 585.9, 0.88, 515.0, 230.0, 2.04, 460.0, 14.0, 377.0, 'x', '8000xi']
+        ),
+        ('#013\r\n',
+         'n\xd6\x96V\xeb\x00\n   883    377  44661  44661      0:47  25301:20  25301:20\x00',
+         ['n\xd6\x96V\xeb', 883.0, 377.0, '44661', 44661.0, '0:47', '25301:20', '25301:20']
+        ),
+        #recorded answer, but intendetly broken! (missing one part)
+        ('#013\r\n',
+         'n\xd6\x96V\xeb\x00\n   377  44661  44661      0:47  25301:20  25301:20\x00',
+         False
+        ),
+        ('#020\r\n',
+         'n\xd6\xf6V\xeb\x00\n*020   4 585.9  0.88   515 230.0  2.04   460  14    377 x 8000xi\r\x00',
+         ['n\xd6\xf6V\xeb*020', 4, 585.9, 0.88, 515.0, 230.0, 2.04, 460.0, 14.0, 377.0, 'x', '8000xi']
+        ),
+        ('#023\r\n',
+         'n\xd6\x96V\xeb\x00\n   883    377  44661  44661      0:47  25301:20  25301:20\x00',
+         ['n\xd6\x96V\xeb', 883.0, 377.0, '44661', 44661.0, '0:47', '25301:20', '25301:20']
+        ),
+        ('#010\r\n',
+         '*010   4 448.4 12.95  5806 236.5 23.60  5555  50  28143 \xf5 8000xi',
+         ['*010', 4, 448.4, 12.95, 5806.0, 236.5, 23.6, 5555.0, 50.0, 28143.0, '\xf5', '8000xi']
+        ),
+        ('#013\r\n',
+         '7911  28144  46176  46176 10:29  27443:01  27443:01',
+         [7911.0, 28144.0, '46176', 46176.0, '10:29', '27443:01', '27443:01']
+        ),
+
+    ]
+
+    def test_parse(self):
         p = KacoRS485Parser()
 
-        out = '*010	4	585.9	10.17	5958	229.5	24.90	5720	36	17614	9600I dx'
-        expected = ['*010', 4, 585.9, 10.17, 5958, 229.5, 24.90, 5720, 36, 17614, '9600I', 'dx']
-
-        answer = p.parse(out, '#010\r\n')
-        self.assertEqual(sorted(self.answer_to_list(answer)),sorted(expected))
-
-    def testParse3(self):
-        p = KacoRS485Parser()
-
-        out = '*013 2286 4184 42 581 8:46 11:04 11:04'
-        expected = ['*013', 2286, 4184, '42', 581, '8:46', '11:04', '11:04']
-        answer = p.parse(out, '#013\r\n')
-        self.assertEqual(sorted(self.answer_to_list(answer)),sorted(expected))
+        for i, item in enumerate(self.test_lines):
+            print("test parse {}".format(i))
+            print("try to parse: {}".format(item[1]))
+            try:
+                answer = p.parse(item[1], item[0])
+                print(self.answer_to_list(answer))
+                self.assertEqual(sorted(item[2]), sorted(self.answer_to_list(answer)))
+            except Exception as e:
+                if item[2] is False:
+                    # we do not except an answer but exception
+                    pass
+                else:
+                    raise
