@@ -169,7 +169,7 @@ class KacoRS485(object):
         port = glob.glob(port)
         if not port:
             raise Exception('could not find a valid rs485 port')
-        return port
+        return port[0]
 
     def __init__(self,serialPort):
         """
@@ -181,7 +181,7 @@ class KacoRS485(object):
         ``
         """
         if '*' in serialPort:
-            serialPort = self.port_from_wildcard[0]
+            serialPort = self.port_from_wildcard(serialPort)
 
         #create and open serial port
         self.ser = serial.Serial(

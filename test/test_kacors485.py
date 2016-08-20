@@ -36,6 +36,20 @@ class TestSerialMethods(unittest.TestCase):
         )
 
     @mock.patch('serial.Serial', spec=serial.Serial)
+    def testInitialization_Wildcard(self, mock_serial):
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        k = KacoRS485(os.path.join(dir_path, 'ttyUSB*'))
+
+        mock_serial.assert_called_once_with(
+            port=os.path.join(dir_path, 'ttyUSB0.test'),
+            baudrate=9600,
+            parity=serial.PARITY_NONE,
+            stopbits=serial.STOPBITS_ONE,
+            bytesize=serial.EIGHTBITS,
+            timeout=0.5
+        )
+
+    @mock.patch('serial.Serial', spec=serial.Serial)
     def testClose(self,mock_serial):
         k = KacoRS485('/dev/ttyUSB0')
 
