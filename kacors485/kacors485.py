@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import serial
+import glob
 
 
 class KacoRS485Parser(object):
@@ -13,6 +14,7 @@ class KacoRS485Parser(object):
             0: {'name' : 'last_command_sent',
                 'description': 'Adresse & Fernsteuerbefehl'},
             1: {'name': 'status',
+                'convert_to': int,
                 'description': """Status des Wechselrichters\n
 Nicht sicher, aber könnte etwa so sein:
 0 Wechselrichter hat sich gerade eingeschaltet Nur nach erstem Einschalten am Morgen
@@ -41,20 +43,28 @@ der drei Netzphasen ausgefallen ist oder die Spannung außerhalb der Toleranz is
 15 Übergang zur Nachtabschaltung Wechselrichter legt sich schlafen
 """               },
             2: {'name': 'u_dc',
+                'convert_to': float,
                 'description': 'Generator Spannung in V *10'},
             3: {'name': 'i_dc',
+                'convert_to': float,
                 'description': 'Generator Strom in A 100'},
             4: {'name': 'p_dc',
+                'convert_to': float,
                 'description': 'Generator Leistung in W'},
             5: {'name': 'u_ac',
+                'convert_to': float,
                 'description': 'Netz Spannung in V *10'},
             6: {'name': 'i_ac',
+                'convert_to': float,
                 'description': 'Netz Strom in A *100'},
             7: {'name': 'p_ac',
+                'convert_to': float,
                 'description': 'Einspeiseleistung in W'},
             8: {'name':  'temp',
+                'convert_to': float,
                 'description': 'Geraetetemperatur in °C'},
             9: {'name': 'e_day',
+                'convert_to': float,
                 'description': 'Tagesenergie in Wh'},
             10: {'name': 'checksum',
                 'description': 'Pruefsumme'},
@@ -65,12 +75,15 @@ der drei Netzphasen ausgefallen ist oder die Spannung außerhalb der Toleranz is
             0: {'name' : 'last_command_sent',
                 'description': 'Adresse & Fernsteuerbefehl'},
             1: {'name': 'p_top',
+                'convert_to': float,
                 'description': 'Spitzenleistung in W'},
             2: {'name': 'e_day',
+                'convert_to': float,
                 'description': 'Tagesenergie in Wh'},
             3: {'name': 'no_idea',
                 'description': 'Zaehler der Hochzaehlt, ka was, evlt auch Gesamtenergie in kWh'},
             4: {'name': 'e_all',
+                'convert_to': float,
                 'description': 'Gesamtenergie in kWh'},
             5: {'name': 'run_today',
                 'description': 'Betriebsstunden heute in hh:mm'},
@@ -110,6 +123,9 @@ der drei Netzphasen ausgefallen ist oder die Spannung außerhalb der Toleranz is
 
         ret = {}
         for i,value in enumerate(l):
+            if 'convert_to' in mymap[i]:
+                value = mymap[i]['convert_to'](value)
+                
             ret[i] = mymap[i]
             ret[i]['value'] = value
 
@@ -141,6 +157,12 @@ class KacoRS485(object):
 
     waitBeforeRead = 0.7
 
+    def port_from_wildcard(self, port):
+        port = glob.glob(port)
+        if not port:
+            raise Exception('could not find a valid rs485 port')
+        return port
+
     def __init__(self,serialPort):
         """
         initalize which serial port we should use
@@ -150,6 +172,8 @@ class KacoRS485(object):
         kaco = KacoRS485('/dev/ttyUSB0')
         ``
         """
+        if '*' in serialPort:
+            serialPort = self.port_from_wildcard[0]
 
         #create and open serial port
         self.ser = serial.Serial(
