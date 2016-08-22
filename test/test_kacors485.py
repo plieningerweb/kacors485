@@ -2,6 +2,7 @@ import unittest
 
 #set import path to ../ directory
 import sys
+import json
 import os.path
 libpath = os.path.abspath(os.path.join(os.path.dirname(__file__),  os.path.pardir))
 sys.path.append(libpath)
@@ -144,11 +145,11 @@ class TestParserMethods(unittest.TestCase):
         ),
         ('#010\r\n',
          'n\xd6\xf6V\xeb\x00\n*010   4 585.9  0.88   515 230.0  2.04   460  14    377 x 8000xi\r\x00',
-         ['n\xd6\xf6V\xeb*010', 4, 585.9, 0.88, 515.0, 230.0, 2.04, 460.0, 14.0, 377.0, 'x', '8000xi']
+         ['nV*010', 4, 585.9, 0.88, 515.0, 230.0, 2.04, 460.0, 14.0, 377.0, 'x', '8000xi']
         ),
         ('#013\r\n',
          'n\xd6\x96V\xeb\x00\n   883    377  44661  44661      0:47  25301:20  25301:20\x00',
-         ['n\xd6\x96V\xeb', 883.0, 377.0, '44661', 44661.0, '0:47', '25301:20', '25301:20']
+         ['nV', 883.0, 377.0, '44661', 44661.0, '0:47', '25301:20', '25301:20']
         ),
         #recorded answer, but intendetly broken! (missing one part)
         ('#013\r\n',
@@ -157,15 +158,15 @@ class TestParserMethods(unittest.TestCase):
         ),
         ('#020\r\n',
          'n\xd6\xf6V\xeb\x00\n*020   4 585.9  0.88   515 230.0  2.04   460  14    377 x 8000xi\r\x00',
-         ['n\xd6\xf6V\xeb*020', 4, 585.9, 0.88, 515.0, 230.0, 2.04, 460.0, 14.0, 377.0, 'x', '8000xi']
+         ['nV*020', 4, 585.9, 0.88, 515.0, 230.0, 2.04, 460.0, 14.0, 377.0, 'x', '8000xi']
         ),
         ('#023\r\n',
          'n\xd6\x96V\xeb\x00\n   883    377  44661  44661      0:47  25301:20  25301:20\x00',
-         ['n\xd6\x96V\xeb', 883.0, 377.0, '44661', 44661.0, '0:47', '25301:20', '25301:20']
+         ['nV', 883.0, 377.0, '44661', 44661.0, '0:47', '25301:20', '25301:20']
         ),
         ('#010\r\n',
          '*010   4 448.4 12.95  5806 236.5 23.60  5555  50  28143 \xf5 8000xi',
-         ['*010', 4, 448.4, 12.95, 5806.0, 236.5, 23.6, 5555.0, 50.0, 28143.0, '\xf5', '8000xi']
+         ['*010', 4, 448.4, 12.95, 5806.0, 236.5, 23.6, 5555.0, 50.0, 28143.0, '', '8000xi']
         ),
         ('#013\r\n',
          '7911  28144  46176  46176 10:29  27443:01  27443:01',
@@ -182,8 +183,13 @@ class TestParserMethods(unittest.TestCase):
             print("try to parse: {}".format(item[1]))
             try:
                 answer = p.parse(item[1], item[0])
-                print(self.answer_to_list(answer))
-                self.assertEqual(sorted(item[2]), sorted(self.answer_to_list(answer)))
+                answer_list = self.answer_to_list(answer)
+                print(answer_list)
+
+                # assert it can be json encoded
+                json.dumps(answer_list)
+
+                self.assertEqual(sorted(item[2]), sorted(answer_list))
             except Exception as e:
                 if item[2] is False:
                     # we do not except an answer but exception

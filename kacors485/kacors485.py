@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 import serial
 import glob
+import json
+import string
 
 
 class KacoRS485Parser(object):
     """
     parse the answer of kakco rs485 protokoll
     """
-
+    printable = set(string.printable)
     mapping = {}
     mapping[0] = {
 #            -1: {'name': 'garbage'},
@@ -134,10 +136,18 @@ der drei Netzphasen ausgefallen ist oder die Spannung außerhalb der Toleranz is
             if 'convert_to' in mymap[i]:
                 value = mymap[i]['convert_to'](value)
 
+            try:
+                json.dumps(value)
+            except Exception:
+                value = self.convert_to_printable(value)
+
             ret[i] = mymap[i]
             ret[i]['value'] = value
 
         return ret
+
+    def convert_to_printable(self, value):
+        return filter(lambda x: x in self.printable, value)
 
     def listDictNameToKey(self,l,out={}):
         for i in l:
