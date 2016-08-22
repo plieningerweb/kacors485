@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-version = '1.0.4'
+version = '1.0.5'
 
 import os
 import io
